@@ -104,13 +104,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Gabriela\Documents\freeglut\include\GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Gabriela\Documents\freeglut\include\GL;C:\Users\Gabriela\Documents\glew-2.3.1\include\GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Gabriela\Documents\freeglut\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);freeglut.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Gabriela\Documents\freeglut\lib\x64;C:\Users\Gabriela\Documents\glew-2.3.1\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);freeglut.lib;glew32.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -131,6 +131,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="back.png" />
+    <Image Include="down.png" />
+    <Image Include="front.png" />
+    <Image Include="grass.jpg" />
+    <Image Include="hill2.jpg" />
+    <Image Include="left.png" />
+    <Image Include="right.png" />
+    <Image Include="sh_bk.png" />
+    <Image Include="sh_dn.png" />
+    <Image Include="sh_ft.png" />
+    <Image Include="sh_lf.png" />
+    <Image Include="sh_rt.png" />
+    <Image Include="sh_up.png" />
+    <Image Include="sky3.jpg" />
+    <Image Include="up.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,8 +1,8 @@
 .vs/
 /x64/
 /x86/
-/Debug/
-/Release/
+Debug
+Release
 *.user
 *.aps
 *.opendb
@@ -18,4 +18,3 @@
 *.pdb
 *.ilk
 *.lib
-*.dll

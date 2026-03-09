@@ -19,4 +19,56 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="grass.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="hill2.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="sky3.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="back.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="down.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="front.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="left.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="right.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="up.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="sh_bk.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="sh_dn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="sh_rt.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="sh_up.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="sh_lf.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="sh_ft.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
