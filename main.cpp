@@ -20,6 +20,8 @@ GLuint loadTexture(const char* file)
 {
     int width, height, channels;
 
+    stbi_set_flip_vertically_on_load(true);
+
     unsigned char* data = stbi_load(file, &width, &height, &channels, 0);
 
     if (!data)
@@ -32,7 +34,7 @@ GLuint loadTexture(const char* file)
 
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     GLenum format = channels == 4 ? GL_RGBA : GL_RGB;
@@ -139,24 +141,34 @@ void drawGround()
 
 void drawTerrain()
 {
-    float groundLevel = -199.0f;
+    float groundLevel = -199.9f;
     glEnable(GL_TEXTURE_2D);
-    //glDisable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, grassTexture);
     glColor3f(1.0f, 1.0f, 1.0f);
-    //glColor3f(0.1f, 0.3f, 0.1f);
     for (float x = -200; x < 0; x += 2.0f)
     {
         glBegin(GL_TRIANGLE_STRIP);
         for (float z = -200; z <= 0; z += 2.0f)
         {
-            auto getY = [groundLevel](float x, float z) {
-                float hills = (sin(x * 0.1f) + cos(z * 0.1f)) * 4.0f;
+            /*auto getY = [](float x, float z) {
+                float hills = (sin(x * 0.1f) + cos(z * 0.1f) + 2.0f) * 4.0f;
 
                 float factorX = (x < -50) ? 1.0f : abs(x) / 50.0f;
                 float factorZ = (z < -50) ? 1.0f : abs(z) / 50.0f;
 
                 return hills * factorX * factorZ;
+                };*/
+
+            auto getY = [](float x, float z) {
+                float hills = (sin(x * 0.1f) + cos(z * 0.1f) + 2.0f) * 4.0f;
+
+                float factorX1 = (x > -50.0f) ? abs(x) / 50.0f : 1.0f;
+                float factorX2 = (x < -150.0f) ? (x + 200.0f) / 50.0f : 1.0f;
+
+                float factorZ1 = (z > -50.0f) ? abs(z) / 50.0f : 1.0f;
+                float factorZ2 = (z < -150.0f) ? (z + 200.0f) / 50.0f : 1.0f;
+
+                return hills * factorX1 * factorX2 * factorZ1 * factorZ2;
                 };
 
             float y1 = groundLevel + getY(x, z);
@@ -199,27 +211,32 @@ void drawPinkFlower(float x, float y, float z) {
     glEnable(GL_TEXTURE_2D);
 }
 
-//void plantFlowers() {
-//    for (float x = -200; x < -60; x += 10.0f) {
-//        for (float z = -190; z < -60; z += 10.0f) {
-//
-//            float h = (sin(x * 0.1f) + cos(z * 0.1f)) * 4.0f;
-//            float groundLevel = -199.0f;
-//
-//            drawPinkFlower(x, groundLevel + h, z);
-//        }
-//    }
-//}
-
 void plantFlowers() {
-    float groundLevel = -199.0f;
+    float groundLevel = -199.9f;
 
     glDisable(GL_TEXTURE_2D);
 
     for (float x = -195; x < -5; x += 8.0f) {
         for (float z = -195; z < -5; z += 8.0f) {
 
-            float h = (sin(x * 0.1f) + cos(z * 0.1f)) * 4.0f;
+            /*float hills = (sin(x * 0.1f) + cos(z * 0.1f) + 2.0f) * 4.0f;
+            float factorX = (x < -50) ? 1.0f : abs(x) / 50.0f;
+            float factorZ = (z < -50) ? 1.0f : abs(z) / 50.0f;
+
+            float h = hills * factorX * factorZ;*/
+
+            float hills = (sin(x * 0.1f) + cos(z * 0.1f) + 2.0f) * 4.0f;
+
+            float factorX1 = (x > -50.0f) ? abs(x) / 50.0f : 1.0f;
+            float factorX2 = (x < -150.0f) ? (x + 200.0f) / 50.0f : 1.0f;
+
+            float factorZ1 = (z > -50.0f) ? abs(z) / 50.0f : 1.0f;
+            float factorZ2 = (z < -150.0f) ? (z + 200.0f) / 50.0f : 1.0f;
+
+            float h = hills * factorX1 * factorX2 * factorZ1 * factorZ2;
+
+
+            //float h = (sin(x * 0.1f) + cos(z * 0.1f)) * 4.0f;
 
             drawPinkFlower(x, groundLevel + h, z);
         }
@@ -245,7 +262,10 @@ void display()
         lookX, lookY, lookZ,
         0.0, 1.0, 0.0);
 
-    drawSkybox(-200);
+    glPushMatrix();
+    glTranslatef(eyeX, 0.0f, eyeZ);
+    drawSkybox(200);
+    glPopMatrix();
     drawTerrain();
     plantFlowers();
     glutSwapBuffers();
@@ -254,8 +274,8 @@ void display()
 void keyboard(unsigned char key, int x, int y)
 {
     switch (key) {
-    case 'a': case 'A': camera.walkForward(); break;
-    case 'd': case 'D': camera.walkBackward(); break;
+    case 'd': case 'D': camera.walkForward(); break;
+    case 'a': case 'A': camera.walkBackward(); break;
     case 'w': case 'W': camera.moveGlobalUp(); break;   
     case 's': case 'S': camera.moveGlobalDown(); break;
     }
@@ -294,8 +314,8 @@ void init()
 
     skybox[0] = loadTexture("sh_rt.png");
     skybox[1] = loadTexture("sh_lf.png");
-    skybox[2] = loadTexture("sh_dn.png");
-    skybox[3] = loadTexture("sh_up.png");
+    skybox[2] = loadTexture("sh_up.png");
+    skybox[3] = loadTexture("sh_dn.png");
     skybox[4] = loadTexture("sh_ft.png");
     skybox[5] = loadTexture("sh_bk.png");
 }
