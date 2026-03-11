@@ -68,19 +68,27 @@ void drawSkybox(float size)
     // RIGHT
     glBindTexture(GL_TEXTURE_2D, skybox[0]);
     glBegin(GL_QUADS);
-    glTexCoord2f(0, 0); glVertex3f(size, -size, -size);
+    /*glTexCoord2f(0, 0); glVertex3f(size, -size, -size);
     glTexCoord2f(1, 0); glVertex3f(size, -size, size);
     glTexCoord2f(1, 1); glVertex3f(size, size, size);
-    glTexCoord2f(0, 1); glVertex3f(size, size, -size);
+    glTexCoord2f(0, 1); glVertex3f(size, size, -size);*/
+    glTexCoord2f(0, 0.4f); glVertex3f(size, -size, -size); // 0.5 înseamnă jumătatea pozei
+    glTexCoord2f(1, 0.4f); glVertex3f(size, -size, size);
+    glTexCoord2f(1, 1.0f); glVertex3f(size, size, size);   // 1.0 înseamnă sus de tot
+    glTexCoord2f(0, 1.0f); glVertex3f(size, size, -size);
     glEnd();
 
     // LEFT
     glBindTexture(GL_TEXTURE_2D, skybox[1]);
     glBegin(GL_QUADS);
-    glTexCoord2f(0, 0); glVertex3f(-size, -size, size);
+    /*glTexCoord2f(0, 0); glVertex3f(-size, -size, size);
     glTexCoord2f(1, 0); glVertex3f(-size, -size, -size);
     glTexCoord2f(1, 1); glVertex3f(-size, size, -size);
-    glTexCoord2f(0, 1); glVertex3f(-size, size, size);
+    glTexCoord2f(0, 1); glVertex3f(-size, size, size);*/
+    glTexCoord2f(0, 0.4f); glVertex3f(-size, -size, size);
+    glTexCoord2f(1, 0.4f); glVertex3f(-size, -size, -size);
+    glTexCoord2f(1, 1.0f); glVertex3f(-size, size, -size);
+    glTexCoord2f(0, 1.0f); glVertex3f(-size, size, size);
     glEnd();
 
     // TOP
@@ -104,19 +112,27 @@ void drawSkybox(float size)
     // FRONT
     glBindTexture(GL_TEXTURE_2D, skybox[4]);
     glBegin(GL_QUADS);
-    glTexCoord2f(0, 0); glVertex3f(-size, -size, -size);
+    /*glTexCoord2f(0, 0); glVertex3f(-size, -size, -size);
     glTexCoord2f(1, 0); glVertex3f(size, -size, -size);
     glTexCoord2f(1, 1); glVertex3f(size, size, -size);
-    glTexCoord2f(0, 1); glVertex3f(-size, size, -size);
+    glTexCoord2f(0, 1); glVertex3f(-size, size, -size);*/
+    glTexCoord2f(0, 0.4f); glVertex3f(-size, -size, -size);
+    glTexCoord2f(1, 0.4f); glVertex3f(size, -size, -size);
+    glTexCoord2f(1, 1.0f); glVertex3f(size, size, -size);
+    glTexCoord2f(0, 1.0f); glVertex3f(-size, size, -size);
     glEnd();
 
     // BACK
     glBindTexture(GL_TEXTURE_2D, skybox[5]);
     glBegin(GL_QUADS);
-    glTexCoord2f(0, 0); glVertex3f(size, -size, size);
+    /*glTexCoord2f(0, 0); glVertex3f(size, -size, size);
     glTexCoord2f(1, 0); glVertex3f(-size, -size, size);
     glTexCoord2f(1, 1); glVertex3f(-size, size, size);
-    glTexCoord2f(0, 1); glVertex3f(size, size, size);
+    glTexCoord2f(0, 1); glVertex3f(size, size, size);*/
+    glTexCoord2f(0, 0.4f); glVertex3f(size, -size, size);
+    glTexCoord2f(1, 0.4f); glVertex3f(-size, -size, size);
+    glTexCoord2f(1, 1.0f); glVertex3f(-size, size, size);
+    glTexCoord2f(0, 1.0f); glVertex3f(size, size, size);
     glEnd();
 
     glDepthMask(GL_TRUE);
