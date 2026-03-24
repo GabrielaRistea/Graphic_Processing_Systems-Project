@@ -136,7 +136,9 @@
     <ClInclude Include="Camera.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="asphalt.jpg" />
     <Image Include="back.png" />
+    <Image Include="building5.jpg" />
     <Image Include="down.png" />
     <Image Include="front.png" />
     <Image Include="grass.jpg" />
@@ -151,6 +153,12 @@
     <Image Include="sh_up.png" />
     <Image Include="sky3.jpg" />
     <Image Include="up.png" />
+    <Image Include="xneg.png" />
+    <Image Include="xpos.png" />
+    <Image Include="yneg.png" />
+    <Image Include="ypos.png" />
+    <Image Include="zneg.png" />
+    <Image Include="zpos.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
