@@ -7,11 +7,11 @@ class Camera {
     double speed;
 
 public:
-    Camera() : theta(0.78), phi(0), posX(-140), posY(-185), posZ(-140), speed(2.0) {}
+    Camera() : theta(0), phi(0), posX(0), posY(-198), posZ(0), speed(5.0) {}
 
-    double getDirX() { return cos(phi) * sin(theta); }
+    double getDirX() { return sin(theta); }
     double getDirY() { return sin(phi); }
-    double getDirZ() { return cos(phi) * cos(theta); }
+    double getDirZ() { return cos(theta); }
 
     double getX() { return posX; }
     double getY() { return posY; }
@@ -37,5 +37,14 @@ public:
     void moveGlobalDown() {
         posY -= speed;
         if (posY < -198.0f) posY = -198.0f;
+    }
+    void strafeLeft() {
+        posX -= cos(theta) * speed;
+        posZ += sin(theta) * speed;
+    }
+
+    void strafeRight() {
+        posX += cos(theta) * speed;
+        posZ -= sin(theta) * speed;
     }
 };
