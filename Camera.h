@@ -7,7 +7,7 @@ class Camera {
     double speed;
 
 public:
-    Camera() : theta(0), phi(0), posX(0), posY(-198), posZ(0), speed(5.0) {}
+    Camera() : theta(0), phi(0), posX(0), posY(-198), posZ(0), speed(0.5) {}
 
     double getDirX() { return sin(theta); }
     double getDirY() { return sin(phi); }
@@ -22,10 +22,7 @@ public:
     void moveUp() { phi += 0.05; if (phi > 1.4) phi = 1.4; }
     void moveDown() { phi -= 0.05; if (phi < -1.4) phi = -1.4; }
 
-    void walkForward() {
-        posX += getDirX() * speed;
-        posZ += getDirZ() * speed;
-    }
+   
     void walkBackward() {
         posX -= getDirX() * speed;
         posZ -= getDirZ() * speed;
@@ -38,13 +35,22 @@ public:
         posY -= speed;
         if (posY < -198.0f) posY = -198.0f;
     }
-    void strafeLeft() {
-        posX -= cos(theta) * speed;
-        posZ += sin(theta) * speed;
-    }
+   
 
-    void strafeRight() {
+    void strafeLeft() {
         posX += cos(theta) * speed;
         posZ -= sin(theta) * speed;
     }
+
+    void strafeRight() {
+        posX -= cos(theta) * speed;
+        posZ += sin(theta) * speed;
+    }
+    void walkForward() {
+        posX += getDirX() * speed;
+        posY += getDirY() * speed; 
+        posZ += getDirZ() * speed;
+    }
 };
+
+

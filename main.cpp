@@ -6,6 +6,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 #include "Camera.h"
 
 GLuint grassTexture;
@@ -17,7 +21,17 @@ float cameraX = 0;
 float cameraY = 5;
 float cameraZ = 20;
 Camera camera;
+bool keys[256] = { false };
+int windowWidth = 1000;
+int windowHeight = 800;
+bool firstMouse = true; 
+bool ignoreNextMouse = false;
 
+GLfloat light_position[] = { 0.0, 10.0, 0.0, 1.0 }; 
+//float groundPlane[] = { 0.0f, 1.0f, 0.0f, 199.8f };
+
+bool isShadowPass = false;
+float groundPlane[] = { 0.0f, 1.0f, 0.0f, 199.8f };
 
 GLuint loadTexture(const char* file) {
     int width, height, channels;
@@ -289,46 +303,48 @@ void drawRoad(float centerX, float centerZ, float innerRadius, float outerRadius
     glDisable(GL_CULL_FACE);
 }
 
+
+
 void drawBuilding(float x, float y, float z, float w, float h, float d) {
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, buildingTexture); 
-    glColor3f(1.0f, 1.0f, 1.0f); 
+    if (!isShadowPass) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, buildingTexture);
+        glColor3f(1.0f, 1.0f, 1.0f);
+    }
+    else {
+        glDisable(GL_TEXTURE_2D);
+        glColor4f(0.0f, 0.05f, 0.1f, 0.6f);
+    }
 
     glPushMatrix();
     glTranslatef(x, y + h / 2.0f, z);
     glScalef(w, h, d);
 
     glBegin(GL_QUADS);
-    // Fata
     glTexCoord2f(0.0f, 0.0f); glVertex3f(-0.5f, -0.5f, 0.5f);
     glTexCoord2f(1.0f, 0.0f); glVertex3f(0.5f, -0.5f, 0.5f);
     glTexCoord2f(1.0f, 1.0f); glVertex3f(0.5f, 0.5f, 0.5f);
     glTexCoord2f(0.0f, 1.0f); glVertex3f(-0.5f, 0.5f, 0.5f);
-
     // Spate
     glTexCoord2f(1.0f, 0.0f); glVertex3f(-0.5f, -0.5f, -0.5f);
     glTexCoord2f(1.0f, 1.0f); glVertex3f(-0.5f, 0.5f, -0.5f);
     glTexCoord2f(0.0f, 1.0f); glVertex3f(0.5f, 0.5f, -0.5f);
     glTexCoord2f(0.0f, 0.0f); glVertex3f(0.5f, -0.5f, -0.5f);
-
     // Sus
     glTexCoord2f(0.0f, 1.0f); glVertex3f(-0.5f, 0.5f, -0.5f);
     glTexCoord2f(0.0f, 0.0f); glVertex3f(-0.5f, 0.5f, 0.5f);
     glTexCoord2f(1.0f, 0.0f); glVertex3f(0.5f, 0.5f, 0.5f);
     glTexCoord2f(1.0f, 1.0f); glVertex3f(0.5f, 0.5f, -0.5f);
-
     // Jos
     glTexCoord2f(1.0f, 1.0f); glVertex3f(-0.5f, -0.5f, -0.5f);
     glTexCoord2f(0.0f, 1.0f); glVertex3f(0.5f, -0.5f, -0.5f);
     glTexCoord2f(0.0f, 0.0f); glVertex3f(0.5f, -0.5f, 0.5f);
     glTexCoord2f(1.0f, 0.0f); glVertex3f(-0.5f, -0.5f, 0.5f);
-
     // Dreapta
     glTexCoord2f(1.0f, 0.0f); glVertex3f(0.5f, -0.5f, -0.5f);
     glTexCoord2f(1.0f, 1.0f); glVertex3f(0.5f, 0.5f, -0.5f);
     glTexCoord2f(0.0f, 1.0f); glVertex3f(0.5f, 0.5f, 0.5f);
     glTexCoord2f(0.0f, 0.0f); glVertex3f(0.5f, -0.5f, 0.5f);
-
     // Stanga
     glTexCoord2f(0.0f, 0.0f); glVertex3f(-0.5f, -0.5f, -0.5f);
     glTexCoord2f(1.0f, 0.0f); glVertex3f(-0.5f, -0.5f, 0.5f);
@@ -340,30 +356,35 @@ void drawBuilding(float x, float y, float z, float w, float h, float d) {
 }
 
 void drawTree(float x, float y, float z) {
-    glDisable(GL_TEXTURE_2D); 
+    glDisable(GL_TEXTURE_2D);
 
-    glColor3f(0.4f, 0.2f, 0.1f); 
+    // Trunchi
+    if (!isShadowPass) glColor3f(0.4f, 0.2f, 0.1f);
+    else glColor4f(0.0f, 0.05f, 0.1f, 0.6f); 
+
     glPushMatrix();
     glTranslatef(x, y, z);
-    glRotatef(-90, 1, 0, 0); 
+    glRotatef(-90, 1, 0, 0);
 
     GLUquadric* quad = gluNewQuadric();
     gluCylinder(quad, 0.8f, 0.8f, 7.0f, 10, 10);
-
     glPopMatrix();
-    gluDeleteQuadric(quad); 
+    gluDeleteQuadric(quad);
 
-    glColor3f(0.0f, 0.5f, 0.0f); 
+    // Frunze
+    if (!isShadowPass) glColor3f(0.0f, 0.5f, 0.0f);
+    else glColor4f(0.0f, 0.05f, 0.1f, 0.6f); 
+
     glPushMatrix();
-    glTranslatef(x, y + 2.5f, z); 
-    glRotatef(-90, 1, 0, 0); 
-
+    glTranslatef(x, y + 2.5f, z);
+    glRotatef(-90, 1, 0, 0);
     glutSolidCone(5.0f, 10.0f, 12, 12);
-
     glPopMatrix();
 
-    glEnable(GL_TEXTURE_2D); 
-    glColor3f(1.0f, 1.0f, 1.0f); 
+    if (!isShadowPass) {
+        glEnable(GL_TEXTURE_2D);
+        glColor3f(1.0f, 1.0f, 1.0f);
+    }
 }
 
 void drawStaticObjects() {
@@ -394,45 +415,102 @@ void drawStaticObjects() {
     }
 }
 
+void shadowMatrix(float shadowMat[16], float groundplane[4], float lightpos[4]) {
+    float dot = groundplane[0] * lightpos[0] + groundplane[1] * lightpos[1] +
+        groundplane[2] * lightpos[2] + groundplane[3] * lightpos[3];
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            shadowMat[j * 4 + i] = (i == j) ? (dot - lightpos[i] * groundplane[j]) : (-lightpos[i] * groundplane[j]);
+        }
+    }
+}
+
+void drawStreetLamp(float x, float y, float z) {
+    glDisable(GL_LIGHTING);
+    glDisable(GL_TEXTURE_2D); 
+
+    glColor3f(0.3f, 0.3f, 0.3f);
+    glPushMatrix();
+    glTranslatef(x, y, z);
+    glRotatef(-90, 1, 0, 0);
+    GLUquadric* q = gluNewQuadric();
+    gluCylinder(q, 0.5, 0.3, 50.0, 10, 10); 
+    gluDeleteQuadric(q);
+
+    glTranslatef(0, 0, 50.0); 
+    glColor3f(1.0f, 1.0f, 0.8f); 
+    glutSolidSphere(1.5, 10, 10);
+    glPopMatrix();
+
+    glEnable(GL_TEXTURE_2D); 
+    if (glIsEnabled(GL_LIGHTING)) glEnable(GL_LIGHTING);
+}
+
+
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
     double eyeX = camera.getX();
     double eyeY = camera.getY();
     double eyeZ = camera.getZ();
 
-    double lookX = eyeX + camera.getDirX();
-    double lookY = eyeY + camera.getDirY();
-    double lookZ = eyeZ + camera.getDirZ();
-
     gluLookAt(eyeX, eyeY, eyeZ,
-        lookX, lookY, lookZ,
+        eyeX + camera.getDirX(), eyeY + camera.getDirY(), eyeZ + camera.getDirZ(),
         0.0, 1.0, 0.0);
 
+    glDisable(GL_LIGHTING);
     glPushMatrix();
-    glTranslatef(eyeX, 0.0f, eyeZ);
-    drawSkybox(200);
+        glTranslatef(eyeX, 0.0f, eyeZ);
+        //glTranslatef(eyeX, eyeY, eyeZ);
+        drawSkybox(200);
     glPopMatrix();
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_COLOR_MATERIAL);
+
+    float lamps[2][3] = { {60.0f, -199.8f, 60.0f}, {120.0f, -199.8f, 60.0f} };
+
     drawTerrain();
     plantFlowers();
-    //drawRoad(150.0f, 150.0f, 40.0f, 55.0f, 100);
-    drawStaticObjects();
     drawRoad(60.0f, 60.0f, 40.0f, 55.0f, 100);
+    drawStaticObjects();
+
+    for (int i = 0; i < 2; i++) {
+        drawStreetLamp(lamps[i][0], lamps[i][1], lamps[i][2]);
+    }
+
+    glDisable(GL_LIGHTING);
+    glEnable(GL_BLEND); 
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+    glDepthMask(GL_FALSE);
+
+    for (int i = 0; i < 2; i++) {
+        float lPos[] = { lamps[i][0], lamps[i][1] + 150.0f, lamps[i][2], 1.0f };
+        //float lPos[] = { lamps[i][0] + 20.0f, 100.0f, lamps[i][2] + 20.0f, 0.0f };
+        float sMat[16];
+        shadowMatrix(sMat, groundPlane, lPos);
+
+        glPushMatrix();
+        glMultMatrixf(sMat);
+
+        isShadowPass = true; 
+        drawStaticObjects();
+        isShadowPass = false; 
+
+        glPopMatrix();
+    }
+    glDepthMask(GL_TRUE); 
+    glDisable(GL_BLEND);
+    glEnable(GL_TEXTURE_2D);
     glutSwapBuffers();
 }
 
-void keyboard(unsigned char key, int x, int y)
-{
-    switch (key) {
-    case 'd': case 'D': camera.walkBackward(); break;
-    case 'a': case 'A': camera.walkForward(); break;
-    case 'w': case 'W': camera.moveGlobalUp(); break;   
-    case 's': case 'S': camera.moveGlobalDown(); break;
-    }
-    glutPostRedisplay();
-}
+
+
 
 void special(int key, int, int)
 {
@@ -446,8 +524,31 @@ void special(int key, int, int)
     glutPostRedisplay();
 }
 
+void keyboard(unsigned char key, int x, int y) {
+    keys[key] = true;
+}
+
+void keyboardUp(unsigned char key, int x, int y) {
+    keys[key] = false; 
+}
+
+void updateScene() {
+    if (keys['w'] || keys['W']) camera.walkForward();
+    if (keys['s'] || keys['S']) camera.walkBackward();
+    if (keys['a'] || keys['A']) camera.strafeLeft();
+    if (keys['d'] || keys['D']) camera.strafeRight();
+    if (keys['r'] || keys['R']) camera.moveGlobalUp();
+    if (keys['f'] || keys['F']) camera.moveGlobalDown();
+
+    glutPostRedisplay();
+}
+
+
 void reshape(int w, int h)
 {
+    windowWidth = w;  
+    windowHeight = h;
+
     glViewport(0, 0, w, h);
 
     glMatrixMode(GL_PROJECTION);
@@ -493,6 +594,10 @@ int main(int argc, char** argv)
     glutReshapeFunc(reshape);
     glutSpecialFunc(special);
     glutKeyboardFunc(keyboard);
+    glutKeyboardUpFunc(keyboardUp); 
+    glutIdleFunc(updateScene);
+
+
     glutMainLoop();
 
     return 0;
