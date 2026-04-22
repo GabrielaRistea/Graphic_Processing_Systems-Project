@@ -446,6 +446,39 @@ void drawStreetLamp(float x, float y, float z) {
     if (glIsEnabled(GL_LIGHTING)) glEnable(GL_LIGHTING);
 }
 
+void drawLightCone(float x, float y, float z) {
+    float height = 50.0f;         
+    float radiusTop = 0.4f;        
+    float radiusBottom = 7.0f;    
+    int segments = 30;             
+
+    glDisable(GL_LIGHTING);       
+    glDisable(GL_TEXTURE_2D);      
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glDepthMask(GL_FALSE);
+
+    glBegin(GL_QUAD_STRIP);
+    for (int i = 0; i <= segments; i++) {
+        float angle = 2.0f * M_PI * (float)i / segments;
+        float cx = cos(angle);
+        float cz = sin(angle);
+
+        glColor4f(1.0f, 0.9f, 0.2f, 0.4f);
+        glVertex3f(x + cx * radiusTop, y + height, z + cz * radiusTop);
+        glColor4f(1.0f, 0.9f, 0.2f, 0.0f);
+        glVertex3f(x + cx * radiusBottom, y, z + cz * radiusBottom);
+    }
+    glEnd();
+
+    glDepthMask(GL_TRUE);
+    glDisable(GL_BLEND);
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_LIGHTING);
+}
+
 
 void display()
 {
@@ -481,6 +514,7 @@ void display()
 
     for (int i = 0; i < 2; i++) {
         drawStreetLamp(lamps[i][0], lamps[i][1], lamps[i][2]);
+        drawLightCone(lamps[i][0], lamps[i][1], lamps[i][2]);
     }
 
     glDisable(GL_LIGHTING);
