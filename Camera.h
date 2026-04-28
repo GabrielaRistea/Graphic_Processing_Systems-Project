@@ -36,15 +36,14 @@ public:
         if (posY < -198.0f) posY = -198.0f;
     }
    
-
     void strafeLeft() {
-        posX += cos(theta) * speed;
-        posZ -= sin(theta) * speed;
+        posX -= cos(theta) * speed; 
+        posZ += sin(theta) * speed; 
     }
 
     void strafeRight() {
-        posX -= cos(theta) * speed;
-        posZ += sin(theta) * speed;
+        posX += cos(theta) * speed; 
+        posZ -= sin(theta) * speed; 
     }
     void walkForward() {
         posX += getDirX() * speed;
